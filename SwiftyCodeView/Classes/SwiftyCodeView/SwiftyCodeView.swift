@@ -30,6 +30,8 @@ open class SwiftyCodeView: UIControl {
     }()
     
     fileprivate var items: [SwiftyCodeItemView] = []
+    fileprivate var isFillOut: Bool = false
+    
     open var code: String {
         get {
             let items = stackView.arrangedSubviews.map({$0 as! SwiftyCodeItemView})
@@ -99,7 +101,6 @@ open class SwiftyCodeView: UIControl {
 }
 
 extension SwiftyCodeView: UITextFieldDelegate, SwiftyCodeTextFieldDelegate {
-    
     public func textField(_ textField: UITextField,
                           shouldChangeCharactersIn range: NSRange,
                           replacementString string: String) -> Bool {
@@ -113,11 +114,11 @@ extension SwiftyCodeView: UITextFieldDelegate, SwiftyCodeTextFieldDelegate {
             item.textField.text = string
             sendActions(for: .valueChanged)
             if index == length - 1 { //is last textfield
+                isFillOut = true
                 delegate?.codeView(sender: self, didFinishInput: self.code)
                 textField.resignFirstResponder()
                 return false
             }
-            
             _ = stackView.arrangedSubviews[index + 1].becomeFirstResponder()
         }
         
@@ -125,21 +126,21 @@ extension SwiftyCodeView: UITextFieldDelegate, SwiftyCodeTextFieldDelegate {
     }
     
     public func deleteBackward(sender: SwiftyCodeTextField) {
-        for i in 0..<length {
-            let itemView = stackView.arrangedSubviews[i] as! SwiftyCodeItemView
+        for index in 1..<length {
+            let itemView = stackView.arrangedSubviews[index] as! SwiftyCodeItemView
+            if !itemView.textField.isFirstResponder { continue }
             
-            if !itemView.textField.isFirstResponder {
-                continue
+            // if final itemView is filled out, just clear current's itemView
+            if index == length - 1 && isFillOut {
+                itemView.textField.text = ""
+                isFillOut = false
+                break
             }
             
-            // Remove text on item
-            itemView.textField.text = ""
-            
-            // Move tintBar to previous item
-            if i != 0 {
-                let prevItem = stackView.arrangedSubviews[i-1] as! SwiftyCodeItemView
-                _ = prevItem.becomeFirstResponder()
-            }
+            // else, move tintBar to previous item and clear it
+            let prevItem = stackView.arrangedSubviews[index - 1] as! SwiftyCodeItemView
+            _ = prevItem.becomeFirstResponder()
+            prevItem.textField.text = ""
         }
         sendActions(for: .valueChanged)
     }
