@@ -100,8 +100,9 @@ open class SwiftyCodeView: UIControl {
 
 extension SwiftyCodeView: UITextFieldDelegate, SwiftyCodeTextFieldDelegate {
     
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
+    public func textField(_ textField: UITextField,
+                          shouldChangeCharactersIn range: NSRange,
+                          replacementString string: String) -> Bool {
         if string == "" { //is backspace
             return true
         }
@@ -123,18 +124,22 @@ extension SwiftyCodeView: UITextFieldDelegate, SwiftyCodeTextFieldDelegate {
         return false
     }
     
-    // Bugs: Delete multi symbol
     public func deleteBackward(sender: SwiftyCodeTextField) {
-        for i in 1..<length{
+        for i in 0..<length {
             let itemView = stackView.arrangedSubviews[i] as! SwiftyCodeItemView
             
             if !itemView.textField.isFirstResponder {
                 continue
             }
             
-            let prevItem = stackView.arrangedSubviews[i-1] as! SwiftyCodeItemView
-            _ = prevItem.becomeFirstResponder()
-            prevItem.textField.text = ""
+            // Remove text on item
+            itemView.textField.text = ""
+            
+            // Move tintBar to previous item
+            if i != 0 {
+                let prevItem = stackView.arrangedSubviews[i-1] as! SwiftyCodeItemView
+                _ = prevItem.becomeFirstResponder()
+            }
         }
         sendActions(for: .valueChanged)
     }

@@ -11,7 +11,6 @@ public protocol SwiftyCodeTextFieldDelegate: class {
 }
 
 open class SwiftyCodeTextField: UITextField {
-    
     weak open var deleteDelegate: SwiftyCodeTextFieldDelegate?
     
     override open func deleteBackward() {

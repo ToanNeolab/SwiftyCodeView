@@ -7,7 +7,6 @@
 import UIKit
 
 open class SwiftyCodeItemView: UIView {
-
     @IBOutlet open weak var textField: SwiftyCodeTextField!
     
     override open func awakeFromNib() {
