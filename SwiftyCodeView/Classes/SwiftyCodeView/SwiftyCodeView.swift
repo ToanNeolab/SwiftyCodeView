@@ -123,6 +123,7 @@ extension SwiftyCodeView: UITextFieldDelegate, SwiftyCodeTextFieldDelegate {
         return false
     }
     
+    // Bugs: Delete multi symbol
     public func deleteBackward(sender: SwiftyCodeTextField) {
         for i in 1..<length{
             let itemView = stackView.arrangedSubviews[i] as! SwiftyCodeItemView
