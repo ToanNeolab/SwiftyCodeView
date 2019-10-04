@@ -30,7 +30,7 @@ open class SwiftyCodeView: UIControl {
     }()
     
     fileprivate var items: [SwiftyCodeItemView] = []
-    fileprivate var isFillOut: Bool = false
+    fileprivate var isFilled: Bool = false
     
     open var code: String {
         get {
@@ -114,7 +114,7 @@ extension SwiftyCodeView: UITextFieldDelegate, SwiftyCodeTextFieldDelegate {
             item.textField.text = string
             sendActions(for: .valueChanged)
             if index == length - 1 { //is last textfield
-                isFillOut = true
+                isFilled = true
                 delegate?.codeView(sender: self, didFinishInput: self.code)
                 textField.resignFirstResponder()
                 return false
@@ -131,9 +131,9 @@ extension SwiftyCodeView: UITextFieldDelegate, SwiftyCodeTextFieldDelegate {
             if !itemView.textField.isFirstResponder { continue }
             
             // if final itemView is filled out, just clear current's itemView
-            if index == length - 1 && isFillOut {
+            if index == length - 1 && isFilled {
                 itemView.textField.text = ""
-                isFillOut = false
+                isFilled = false
                 break
             }
             
